@@ -33,10 +33,20 @@ public class UpdateStudentController extends HttpServlet {
     protected void processRequest(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
         HttpSession session = request.getSession();
+        
   	int id = Integer.parseInt(request.getParameter("id"));
+        int[] using_Student = new int[StudentTable.countStudent()];
+        if(using_Student[id-1] != id){
+        synchronized(getServletContext()){
+        using_Student[id-1] = id;
+        getServletContext().setAttribute("usingStudent", using_Student);
         Student std = StudentTable.findStudentById(id);
         session.setAttribute("student", std);
         request.getRequestDispatcher("confirmUpdate.jsp").forward(request, response);
+        }
+        }else{
+        request.getRequestDispatcher("usingStudent.jsp").forward(request, response);
+        }
     }
 
     // <editor-fold defaultstate="collapsed" desc="HttpServlet methods. Click on the + sign on the left to edit the code.">

@@ -116,4 +116,22 @@ public class StudentTable {
         }
         return 1;
     }
+    
+        public static int countStudent(){
+        EntityManagerFactory emf = Persistence.createEntityManagerFactory("StudentWebAppPU");
+        EntityManager em = emf.createEntityManager();
+        List<Student> stdList = null;
+         try {
+            stdList = (List<Student>) em.createNamedQuery("Student.count").getResultList();         
+        } catch (Exception e) {
+            throw new RuntimeException(e);
+            
+        }
+        finally {
+            em.close();
+            emf.close();
+        }
+        int count = stdList.size();
+        return count;
+        }
 }

@@ -19,16 +19,20 @@ public class ConfirmUpdateController extends HttpServlet {
             throws ServletException, IOException {
         response.setContentType("text/html;charset=UTF-8");
         HttpSession session = request.getSession();
+        synchronized(getServletContext()){
         Student std = (Student) session.getAttribute("student");
         int rowUpdated = 0;
         if (request.getParameter("update") != null) {
             std.setName(request.getParameter("name"));
             std.setGpa(Double.parseDouble(request.getParameter("GPA")));
             rowUpdated = StudentTable.updateStudent(std);
-                       
+            int[] using_Student = (int[])getServletContext().getAttribute("usingStudent");
+            using_Student[std.getId()-1] = 0;
+            getServletContext().setAttribute("usingStudent", using_Student);
         } 
         request.setAttribute("rowUpdated", rowUpdated);
         request.getRequestDispatcher("updateResult.jsp").forward(request, response);
+        }
     }
 
     // <editor-fold defaultstate="collapsed" desc="HttpServlet methods. Click on the + sign on the left to edit the code.">
